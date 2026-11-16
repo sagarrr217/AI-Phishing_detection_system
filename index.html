@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhishShield AI — Intelligent Phishing Link Detection System</title>
+  <meta name="description" content="State-of-the-art AI-powered phishing and malicious link detection. Paste any URL to inspect lexical features, homograph attacks, brand spoofing, and threat risk instantly.">
+  <link rel="icon" type="image/jpeg" href="assets/shield-logo.jpg">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient Cyber Background Grid & Glows -->
+  <div class="cyber-bg" aria-hidden="true">
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    <div class="ambient-glow glow-3"></div>
+    <div class="grid-overlay"></div>
+    <div class="scanline"></div>
+  </div>
+
+  <div class="app-container">
+    <!-- Navigation Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-logo-wrap">
+          <img src="assets/shield-logo.jpg" alt="PhishShield Logo" class="brand-logo">
+          <div class="pulse-ring"></div>
+        </div>
+        <div class="brand-text">
+          <div class="brand-title">PhishShield <span class="badge-ai">AI ENGINE v2.4</span></div>
+          <p class="brand-subtitle">Neural Threat Intelligence & Phishing Link Analyzer</p>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <button id="view-architecture-btn" class="btn btn-glass" title="Learn how this AI model was built">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+          <span>Architecture & ML Docs</span>
+        </button>
+        <button id="history-toggle-btn" class="btn btn-glass" title="View Recent Scans">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>History (<span id="history-count">0</span>)</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Hero Headline -->
+      <section class="hero-section">
+        <div class="hero-chip">
+          <span class="live-dot"></span> Real-time Zero-Day Phishing Defense
+        </div>
+        <h1 class="hero-title">Verify Any Suspicious Link <span class="gradient-text">Before You Click</span></h1>
+        <p class="hero-description">
+          Paste any website URL, short link, or suspicious message hyperlink. Our multi-layered AI heuristic model performs deep lexical analysis, homoglyph detection, brand spoofing inspection, and Shannon entropy analysis in milliseconds.
+        </p>
+      </section>
+
+      <!-- URL Input Card -->
+      <section class="scanner-card">
+        <form id="url-scan-form" class="scan-form" novalidate>
+          <div class="input-wrapper">
+            <div class="input-prefix-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+              </svg>
+            </div>
+            <input 
+              type="url" 
+              id="url-input" 
+              class="url-input" 
+              placeholder="https://example.com/login or paste any suspicious link..."
+              autocomplete="off"
+              spellcheck="false"
+              required
+            >
+            <div class="input-actions">
+              <button type="button" id="paste-btn" class="btn-input-action" title="Paste from clipboard">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                </svg>
+                <span>Paste</span>
+              </button>
+              <button type="button" id="clear-btn" class="btn-input-action is-hidden" title="Clear input">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <button type="submit" id="scan-submit-btn" class="btn btn-primary scan-btn">
+            <span class="btn-text">Analyze Link</span>
+            <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </button>
+        </form>
+
+        <!-- Quick Demo Samples -->
+        <div class="sample-links-bar">
+          <span class="sample-label">Or test sample scenarios:</span>
+          <div class="sample-tags">
+            <button type="button" class="sample-btn is-safe" data-url="https://accounts.google.com/signin/v2">
+              <span class="sample-indicator"></span> Legitimate Google
+            </button>
+            <button type="button" class="sample-btn is-danger" data-url="http://paypa1-security-verification.com/login?token=x9a">
+              <span class="sample-indicator"></span> PayPal Spoof
+            </button>
+            <button type="button" class="sample-btn is-danger" data-url="http://192.168.1.45/netflix-billing-update/index.php">
+              <span class="sample-indicator"></span> IP-Host Phish
+            </button>
+            <button type="button" class="sample-btn is-warning" data-url="http://secure.bank-update.verify-account.tk/session">
+              <span class="sample-indicator"></span> Deep Subdomain .tk
+            </button>
+            <button type="button" class="sample-btn is-warning" data-url="https://bit.ly/3x8Qz91">
+              <span class="sample-indicator"></span> Shortened Link
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Scanning Progress Simulation State (Initially hidden) -->
+      <section id="scanning-progress-section" class="scanning-state is-hidden" aria-live="polite">
+        <div class="radar-container">
+          <div class="radar-sweep"></div>
+          <div class="radar-ring r1"></div>
+          <div class="radar-ring r2"></div>
+          <div class="radar-ring r3"></div>
+          <div class="radar-core">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+        </div>
+
+        <div class="scanning-info">
+          <h3 id="scan-status-heading" class="scan-status-title">Initiating Neural Scan...</h3>
+          <p id="scan-status-detail" class="scan-status-desc">Deconstructing URL syntax and parsing domain components</p>
+          
+          <div class="progress-bar-container">
+            <div id="scan-progress-bar" class="progress-bar-fill" style="width: 15%;"></div>
+          </div>
+
+          <div class="scan-steps-grid">
+            <div class="scan-step-item" id="step-lexical">
+              <span class="step-icon">○</span> Lexical & Topology Check
+            </div>
+            <div class="scan-step-item" id="step-homoglyph">
+              <span class="step-icon">○</span> Brand & Homoglyph Spoofing
+            </div>
+            <div class="scan-step-item" id="step-entropy">
+              <span class="step-icon">○</span> Shannon Entropy & Obfuscation
+            </div>
+            <div class="scan-step-item" id="step-ai">
+              <span class="step-icon">○</span> AI Risk Weighting & Verdict
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Results Display Section (Initially hidden) -->
+      <section id="results-section" class="results-container is-hidden">
+        <!-- Main Verdict Banner & Gauge Card -->
+        <div class="result-hero-card" id="verdict-card">
+          <!-- Left: Speedometer / Gauge -->
+          <div class="gauge-column">
+            <div class="radial-gauge-wrapper">
+              <svg class="radial-gauge-svg" viewBox="0 0 200 200">
+                <circle class="gauge-bg" cx="100" cy="100" r="82" />
+                <circle class="gauge-meter" id="gauge-meter-circle" cx="100" cy="100" r="82" />
+              </svg>
+              <div class="gauge-content">
+                <div class="gauge-value" id="gauge-score-value">0</div>
+                <div class="gauge-label" id="gauge-score-label">SAFETY SCORE</div>
+                <div class="gauge-scale" id="gauge-score-scale">OUT OF 100</div>
+              </div>
+            </div>
+            <div class="risk-badge" id="risk-badge">SAFE</div>
+          </div>
+
+          <!-- Right: Verdict Info & Quick Assessment -->
+          <div class="verdict-content">
+            <div class="verdict-header">
+              <div class="verdict-subtitle" id="verdict-subtitle">VERDICT ANALYSIS</div>
+              <h2 class="verdict-title" id="verdict-title">No Immediate Threat Detected</h2>
+            </div>
+            
+            <p class="verdict-description" id="verdict-desc">
+              The inspected URL structure conforms with standard legitimate web patterns. No recognized brand impersonation, high-risk TLDs, or obfuscation vectors were detected.
+            </p>
+
+            <div class="analyzed-url-box">
+              <span class="analyzed-url-label">ANALYZED URL:</span>
+              <span class="analyzed-url-string" id="analyzed-url-display">https://example.com</span>
+              <button type="button" id="copy-url-btn" class="copy-url-btn" title="Copy URL">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Critical User Warning (Visible when score is low / dangerous) -->
+            <div class="user-danger-alert is-hidden" id="user-danger-alert">
+              <div class="danger-alert-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                  <line x1="12" y1="9" x2="12" y2="13"></line>
+                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+              </div>
+              <div class="danger-alert-text">
+                <h4 class="danger-alert-title">🚨 WARNING: DO NOT USE THIS WEBSITE!</h4>
+                <p class="danger-alert-body" id="danger-alert-body">
+                  This website received a dangerously low safety score. It shows strong signs of phishing, deception, or credential theft. For your safety, <strong>DO NOT visit, enter passwords, or submit personal information</strong>.
+                </p>
+              </div>
+            </div>
+
+            <!-- Action Advice Banner -->
+            <div class="action-advice-banner" id="action-advice-banner">
+              <div class="advice-icon" id="advice-icon">✓</div>
+              <div class="advice-text" id="advice-text">
+                <strong>Recommended Action:</strong> Safe to proceed, but always verify login credentials and SSL lock icon in your browser address bar.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metric Pills Bar -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-icon metric-proto">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Protocol Security</span>
+              <span class="metric-val" id="metric-protocol">HTTPS Valid</span>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon metric-brand">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+              </svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Brand Impersonation</span>
+              <span class="metric-val" id="metric-brand">None Detected</span>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon metric-entropy">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">Shannon Entropy</span>
+              <span class="metric-val" id="metric-entropy">3.42 (Normal)</span>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon metric-tld">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+            </div>
+            <div class="metric-info">
+              <span class="metric-label">TLD Reputation</span>
+              <span class="metric-val" id="metric-tld">Standard (.com)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- URL Anatomy Deconstruction Visualizer -->
+        <div class="breakdown-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="4 7 4 4 20 4 20 7"></polyline>
+                <line x1="9" y1="20" x2="15" y2="20"></line>
+                <line x1="12" y1="4" x2="12" y2="20"></line>
+              </svg>
+              URL Anatomy & Deconstructed Elements
+            </h3>
+            <span class="header-badge">Lexical Parser</span>
+          </div>
+          
+          <div class="anatomy-visualizer" id="anatomy-container">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- AI Neural Network Attention & Token Heatmap -->
+        <div class="breakdown-card ai-neural-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <svg class="icon icon-ai" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2a4 4 0 0 1 4 4c0 .88-.3 1.7-.8 2.37L17 10a4 4 0 0 1 4 4c0 1.1-.45 2.1-1.17 2.83l.17.17A4 4 0 0 1 18 21a4 4 0 0 1-4-4c0-.88.3-1.7.8-2.37L13 13a4 4 0 0 1-4-4c0-1.1.45-2.1 1.17-2.83l-.17-.17A4 4 0 0 1 8 2a4 4 0 0 1 4 4z"></path>
+              </svg>
+              Neural Character Attention & Token Heatmap
+            </h3>
+            <div class="ai-model-tag-wrap">
+              <span class="ai-badge-model">RandomForest + Lexical NLP</span>
+              <span class="ai-badge-confidence" id="ai-confidence-badge">99.4% AI Confidence</span>
+            </div>
+          </div>
+          <p class="ai-section-desc">
+            Our trained neural model evaluates individual character n-grams and sub-tokens. Highlighted tokens indicate high-activation phishing features detected by the model.
+          </p>
+          <div class="neural-heatmap-container" id="neural-heatmap-container">
+            <!-- Populated dynamically via JS -->
+          </div>
+        </div>
+
+        <!-- AI Cybersecurity Analyst Diagnosis & Interactive Copilot -->
+        <div class="breakdown-card ai-copilot-card">
+          <div class="card-header">
+            <div class="ai-analyst-header-left">
+              <div class="ai-avatar-wrap">
+                <div class="ai-avatar-core">AI</div>
+                <div class="ai-pulse-dot"></div>
+              </div>
+              <div>
+                <h3 class="card-title">AI Cybersecurity Analyst Diagnosis</h3>
+                <span class="ai-analyst-subtitle">Deep Neural Threat Pattern Intelligence</span>
+              </div>
+            </div>
+            <span class="ai-latency-badge" id="ai-latency-badge">Inference: 3.2ms</span>
+          </div>
+
+          <div class="ai-diagnosis-grid">
+            <div class="ai-diag-item">
+              <span class="ai-diag-label">Identified Threat Type</span>
+              <span class="ai-diag-val" id="ai-threat-type">Credential Harvesting Phish</span>
+            </div>
+            <div class="ai-diag-item">
+              <span class="ai-diag-label">Deception Strategy</span>
+              <span class="ai-diag-val" id="ai-deception-strat">Homoglyph Brand Camouflage</span>
+            </div>
+            <div class="ai-diag-item">
+              <span class="ai-diag-label">Pretext Psychology</span>
+              <span class="ai-diag-val" id="ai-psych-lure">Urgent Account Suspension Notice</span>
+            </div>
+            <div class="ai-diag-item">
+              <span class="ai-diag-label">Target Entity</span>
+              <span class="ai-diag-val" id="ai-target-entity">PayPal Customers</span>
+            </div>
+          </div>
+
+          <!-- Interactive Ask AI Security Assistant -->
+          <div class="ask-ai-section">
+            <div class="ask-ai-header">
+              <span class="ask-ai-title">Ask AI Security Assistant:</span>
+              <span class="ask-ai-hint">Click a question for instant AI reasoning:</span>
+            </div>
+            <div class="ask-ai-chips">
+              <button type="button" class="ai-chip-btn" data-question="deception">How does this link deceive victims?</button>
+              <button type="button" class="ai-chip-btn" data-question="risk">What happens if I clicked this link?</button>
+              <button type="button" class="ai-chip-btn" data-question="features">Which AI features triggered the score?</button>
+              <button type="button" class="ai-chip-btn" data-question="action">What should I do right now?</button>
+            </div>
+            <div class="ai-response-box is-hidden" id="ai-response-box">
+              <div class="ai-response-header">
+                <span class="ai-response-title" id="ai-response-title">AI Reasoning</span>
+                <button type="button" class="ai-close-response-btn" id="ai-close-response-btn">&times;</button>
+              </div>
+              <div class="ai-response-content" id="ai-response-content">
+                <!-- Populated dynamically via JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Threat Vector Progress Bars & Neural Flags Grid -->
+        <div class="two-column-grid">
+          <!-- Vector 1: Risk Dimensions -->
+          <div class="breakdown-card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                </svg>
+                Multi-Vector Risk Weights
+              </h3>
+              <span class="header-badge">AI Heuristic Matrix</span>
+            </div>
+
+            <div class="risk-vectors-list" id="risk-vectors-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Vector 2: Detected Flags & Explainable Insights -->
+          <div class="breakdown-card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                Explainable AI Security Findings
+              </h3>
+              <span class="header-badge" id="findings-count-badge">0 Findings</span>
+            </div>
+
+            <div class="findings-list" id="findings-list">
+              <!-- Dynamically populated with individual flags and severity badges -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- History Drawer (Overlay/Modal) -->
+      <aside id="history-drawer" class="history-drawer is-closed" aria-label="Scan History">
+        <div class="drawer-header">
+          <h3>Recent Link Scans</h3>
+          <div class="drawer-actions">
+            <button id="clear-history-btn" class="btn-text-danger" title="Clear all history">Clear</button>
+            <button id="close-history-btn" class="btn-close-drawer" aria-label="Close Drawer">&times;</button>
+          </div>
+        </div>
+        <div class="history-list" id="history-items-container">
+          <!-- Rendered via JS -->
+        </div>
+      </aside>
+
+      <!-- Full Architecture & ML Documentation Modal -->
+      <div id="architecture-modal" class="modal-backdrop is-hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-dialog">
+          <div class="modal-header">
+            <div class="modal-title-wrap">
+              <h2 id="modal-title">AI Phishing Detection System — Architecture & Build Steps</h2>
+              <p>Complete engineering guide to build, train, and deploy this project</p>
+            </div>
+            <button id="close-modal-btn" class="modal-close-btn" aria-label="Close Modal">&times;</button>
+          </div>
+
+          <div class="modal-body">
+            <!-- Tabs -->
+            <div class="modal-tabs">
+              <button class="tab-btn active" data-tab="tab-steps">1. Step-by-Step Blueprint</button>
+              <button class="tab-btn" data-tab="tab-ml">2. AI / ML Modeling</button>
+              <button class="tab-btn" data-tab="tab-features">3. Feature Engineering</button>
+              <button class="tab-btn" data-tab="tab-backend">4. Python API Code</button>
+            </div>
+
+            <!-- Tab Content 1: Step by Step -->
+            <div class="tab-pane active" id="tab-steps">
+              <div class="blueprint-timeline">
+                <div class="timeline-step">
+                  <div class="step-num">Step 1</div>
+                  <div class="step-detail">
+                    <h4>Problem Definition & Architecture Design</h4>
+                    <p>Design a decoupled 3-tier system: (1) Reactive Web Frontend (HTML/CSS/JS) for instant user inspection, (2) Python FastAPI Backend for asynchronous model inference and WHOIS/DNS lookup, (3) Machine Learning Engine trained on 500k+ malicious & benign URLs.</p>
+                  </div>
+                </div>
+
+                <div class="timeline-step">
+                  <div class="step-num">Step 2</div>
+                  <div class="step-detail">
+                    <h4>Gather Datasets (Phishing vs. Legitimate)</h4>
+                    <p>Collect high-quality labeled data from verified open-source threat feeds:
+                      <ul>
+                        <li><strong>Phishing Feeds:</strong> PhishTank (phishtank.org CSV API), OpenPhish community feed, URLhaus (abuse.ch).</li>
+                        <li><strong>Legitimate Feeds:</strong> Tranco Top 1 Million domains list, Alexa Top Sites, Common Crawl benign URLs.</li>
+                      </ul>
+                    </p>
+                  </div>
+                </div>
+
+                <div class="timeline-step">
+                  <div class="step-num">Step 3</div>
+                  <div class="step-detail">
+                    <h4>URL Feature Extraction Pipeline</h4>
+                    <p>Transform raw URL strings into numerical feature vectors across 4 major dimensions:
+                      <ul>
+                        <li><strong>Lexical:</strong> URL length, hostname length, path depth, token counts, digit-to-letter ratio.</li>
+                        <li><strong>Structural:</strong> Presence of IP address, '@' redirect symbol, '//' double slashes, hyphens in domain.</li>
+                        <li><strong>Homoglyphs & Spoofing:</strong> Typosquatting distance from top 500 brand names (Levenshtein distance & Punycode <code>xn--</code>).</li>
+                        <li><strong>Information Theory:</strong> Shannon Entropy of domain and path to detect Domain Generation Algorithms (DGA).</li>
+                      </ul>
+                    </p>
+                  </div>
+                </div>
+
+                <div class="timeline-step">
+                  <div class="step-num">Step 4</div>
+                  <div class="step-detail">
+                    <h4>Model Training & Evaluation</h4>
+                    <p>Train an ensemble model (Random Forest / XGBoost / LightGBM) for fast sub-50ms inference, or fine-tune a lightweight Transformer (DistilBERT) for character-level URL sequence embeddings. Measure Precision, Recall, and ROC-AUC (target >98% accuracy on zero-day URLs).</p>
+                  </div>
+                </div>
+
+                <div class="timeline-step">
+                  <div class="step-num">Step 5</div>
+                  <div class="step-detail">
+                    <h4>Build Web API & Deploy User Interface</h4>
+                    <p>Expose a <code>POST /api/v1/scan-url</code> endpoint with FastAPI. Connect the front-end user experience with one-click verification, visual gauge meters, explainable AI flags, and defensive suggestions.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab Content 2: ML Modeling -->
+            <div class="tab-pane" id="tab-ml">
+              <div class="code-preview-block">
+                <h4>Recommended Machine Learning Stack</h4>
+                <table class="model-comparison-table">
+                  <thead>
+                    <tr>
+                      <th>Model Architecture</th>
+                      <th>Inference Speed</th>
+                      <th>Accuracy</th>
+                      <th>Best Use Case</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>XGBoost / LightGBM</strong></td>
+                      <td>&lt; 5 ms (Ultra Fast)</td>
+                      <td>98.4%</td>
+                      <td>Real-time production web APIs with extracted tabular features</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Random Forest Classifier</strong></td>
+                      <td>&lt; 10 ms</td>
+                      <td>97.8%</td>
+                      <td>Interpretable feature importance & low false-positive baseline</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Character-level 1D-CNN + BiLSTM</strong></td>
+                      <td>~ 35 ms</td>
+                      <td>98.9%</td>
+                      <td>End-to-end learning directly on raw character sequences without manual features</td>
+                    </tr>
+                    <tr>
+                      <td><strong>DistilBERT / URL-BERT</strong></td>
+                      <td>~ 80 ms (GPU/ONNX)</td>
+                      <td>99.2%</td>
+                      <td>Deep contextual NLP for complex semantic deception & spear-phishing links</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Tab Content 3: Features -->
+            <div class="tab-pane" id="tab-features">
+              <div class="feature-matrix">
+                <h4>20 Key Mathematical & Structural Features Extracted:</h4>
+                <div class="features-grid-display">
+                  <div class="feat-box"><code>f01: url_length</code><br><small>Total character length (>75 is high risk)</small></div>
+                  <div class="feat-box"><code>f02: domain_length</code><br><small>Hostname character count</small></div>
+                  <div class="feat-box"><code>f03: has_ip_address</code><br><small>Binary flag if IP used as host</small></div>
+                  <div class="feat-box"><code>f04: count_dots</code><br><small>Dot count across hostname & path</small></div>
+                  <div class="feat-box"><code>f05: count_hyphens</code><br><small>Hyphens in domain (e.g. pay-pal)</small></div>
+                  <div class="feat-box"><code>f06: count_at_symbol</code><br><small>Browser credentials redirect trick</small></div>
+                  <div class="feat-box"><code>f07: count_double_slash</code><br><small>Redirect evasion via '//' in path</small></div>
+                  <div class="feat-box"><code>f08: subdomain_depth</code><br><small>Count of subdomains (e.g. a.b.c.com)</small></div>
+                  <div class="feat-box"><code>f09: is_https</code><br><small>Transport layer encryption check</small></div>
+                  <div class="feat-box"><code>f10: shannon_entropy</code><br><small>Randomness score: -Σ p(x) log2 p(x)</small></div>
+                  <div class="feat-box"><code>f11: high_risk_tld</code><br><small>Flags .tk, .ga, .cf, .ml, .top, .xyz</small></div>
+                  <div class="feat-box"><code>f12: brand_target_match</code><br><small>Targeting PayPal/Google on 3rd-party domain</small></div>
+                  <div class="feat-box"><code>f13: homoglyph_punycode</code><br><small>IDN spoofing (e.g. Cyrillic 'а' or xn--)</small></div>
+                  <div class="feat-box"><code>f14: is_url_shortener</code><br><small>bit.ly, tinyurl, t.co destination masking</small></div>
+                  <div class="feat-box"><code>f15: sensitive_keywords</code><br><small>login, verify, banking, security, billing</small></div>
+                  <div class="feat-box"><code>f16: port_in_url</code><br><small>Non-standard ports (8080, 8443, 2082)</small></div>
+                  <div class="feat-box"><code>f17: digit_ratio</code><br><small>Percentage of digits in hostname</small></div>
+                  <div class="feat-box"><code>f18: query_param_count</code><br><small>Number of GET parameters</small></div>
+                  <div class="feat-box"><code>f19: path_extension</code><br><small>Dangerous suffixes (.exe, .php, .scr)</small></div>
+                  <div class="feat-box"><code>f20: lexical_reputation</code><br><small>Weighted composite heuristic score</small></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab Content 4: Backend Code -->
+            <div class="tab-pane" id="tab-backend">
+              <div class="code-wrapper">
+                <div class="code-header">
+                  <span>FastAPI Production Microservice (<code>api.py</code>)</span>
+                </div>
+                <pre class="code-content"><code># api.py - FastAPI AI Phishing Verification Endpoint
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, HttpUrl
+import math, re, tldextract, joblib
+
+app = FastAPI(title="PhishShield AI API", version="2.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+class URLRequest(BaseModel):
+    url: str
+
+def calculate_shannon_entropy(text: str) -> float:
+    if not text:
+        return 0.0
+    entropy = 0
+    for x in set(text):
+        p_x = float(text.count(x)) / len(text)
+        entropy += - p_x * math.log(p_x, 2)
+    return round(entropy, 3)
+
+def extract_features(url: str):
+    ext = tldextract.extract(url)
+    domain = ext.domain + "." + ext.suffix
+    subdomain = ext.subdomain
+    is_ip = bool(re.search(r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$', ext.domain))
+    
+    return {
+        "url_length": len(url),
+        "domain_length": len(domain),
+        "has_ip": 1 if is_ip else 0,
+        "subdomain_count": len(subdomain.split('.')) if subdomain else 0,
+        "hyphen_count": domain.count('-'),
+        "at_symbol": 1 if "@" in url else 0,
+        "double_slash": 1 if "//" in url[8:] else 0,
+        "is_https": 1 if url.startswith("https://") else 0,
+        "entropy": calculate_shannon_entropy(domain)
+    }
+
+@app.post("/api/scan-url")
+def scan_url(payload: URLRequest):
+    features = extract_features(payload.url)
+    # model = joblib.load("phishing_model.pkl")
+    # threat_prob = model.predict_proba([list(features.values())])[0][1]
+    return {
+        "url": payload.url,
+        "features": features,
+        "status": "success"
+    }</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button id="modal-close-footer-btn" class="btn btn-secondary">Close Documentation</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <p>PhishShield AI — Open Security Intelligence Project &bull; Built with Explainable Machine Learning Heuristics</p>
+        <p class="footer-disclaimer">Always exercise caution: zero-day attacks continuously evolve. Never enter passwords or sensitive personal details into unverified domains.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

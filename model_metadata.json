@@ -1,0 +1,60 @@
+{
+  "model_type": "RandomForestClassifier",
+  "n_estimators": 120,
+  "max_depth": 12,
+  "accuracy": 100.0,
+  "precision": 100.0,
+  "recall": 100.0,
+  "f1_score": 100.0,
+  "feature_names": [
+    "url_length",
+    "hostname_length",
+    "is_https",
+    "is_ip_address",
+    "subdomain_count",
+    "count_dots",
+    "count_hyphens",
+    "count_at_symbol",
+    "count_double_slash",
+    "has_port",
+    "shannon_entropy",
+    "is_high_risk_tld",
+    "brand_target_flag",
+    "keyword_density",
+    "digit_ratio"
+  ],
+  "top_features": [
+    {
+      "feature": "is_https",
+      "importance": 25.59
+    },
+    {
+      "feature": "digit_ratio",
+      "importance": 20.54
+    },
+    {
+      "feature": "count_hyphens",
+      "importance": 15.83
+    },
+    {
+      "feature": "shannon_entropy",
+      "importance": 12.4
+    },
+    {
+      "feature": "keyword_density",
+      "importance": 6.27
+    },
+    {
+      "feature": "is_high_risk_tld",
+      "importance": 6.23
+    },
+    {
+      "feature": "hostname_length",
+      "importance": 5.11
+    },
+    {
+      "feature": "brand_target_flag",
+      "importance": 4.25
+    }
+  ]
+}

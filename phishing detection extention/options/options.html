@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhishShield AI — Protection & Sensitivity Settings</title>
+  
+  <!-- Modern Typography: Outfit (Display) + Inter (UI) + JetBrains Mono (Telemetry) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="options-container">
+    <header class="options-header">
+      <div class="logo-area">
+        <div class="shield-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <polyline points="9 12 11 14 15 10"></polyline>
+          </svg>
+        </div>
+        <div>
+          <h1>PhishShield <span class="cyan-text">AI</span> Settings</h1>
+          <p class="subtitle">Configure real-time heuristics, pop-up alerts, whitelist, and neural sensitivity.</p>
+        </div>
+      </div>
+      <button class="btn btn-save" id="save-btn-top">Save Settings</button>
+    </header>
+
+    <main class="options-body">
+      <!-- Section 1: Real-Time Shield -->
+      <section class="config-card">
+        <h2 class="card-title">1. Real-Time Navigation Protection</h2>
+        <p class="card-desc">Automatically inspects web destinations as you browse and alerts you before submitting sensitive data.</p>
+        
+        <div class="setting-row">
+          <div class="setting-text">
+            <label class="setting-label" for="realtime-toggle">Enable Real-Time Page Analysis</label>
+            <span class="setting-subtext">Monitors active tabs and scans every new URL for phishing indicators in &lt;3ms.</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="realtime-toggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-text">
+            <label class="setting-label">Detection Sensitivity Level</label>
+            <span class="setting-subtext">Adjust the threshold required to trigger threat warnings.</span>
+          </div>
+          <select id="sensitivity-select" class="custom-select">
+            <option value="strict">Strict (Flags subtle anomalies & unverified TLDs)</option>
+            <option value="balanced" selected>Balanced (Recommended default)</option>
+            <option value="permissive">Permissive (Critical attacks only)</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Section 2: Alert Pop-Up Delivery -->
+      <section class="config-card">
+        <h2 class="card-title">2. Phishing Warning Pop-Up Behavior</h2>
+        <p class="card-desc">Choose how malicious site notifications appear when a threat is intercepted.</p>
+
+        <div class="setting-row">
+          <div class="setting-text">
+            <label class="setting-label" for="modal-toggle">In-Page Security Warning Pop-Up</label>
+            <span class="setting-subtext">Displays an unmissable modal overlay over malicious pages to prevent accidental credential entry.</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="modal-toggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-text">
+            <label class="setting-label" for="audio-toggle">Security Warning Tone (Audio Chime)</label>
+            <span class="setting-subtext">Plays a quick synthesized audio alert when an active phishing link is intercepted.</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="audio-toggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-text">
+            <label class="setting-label" for="notify-toggle">Chrome Desktop Notifications</label>
+            <span class="setting-subtext">Sends a native system notification when visiting high-risk domains.</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="notify-toggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Section 3: Whitelisted Domains -->
+      <section class="config-card">
+        <h2 class="card-title">3. Trusted Domain Whitelist</h2>
+        <p class="card-desc">Domains added here are exempted from all real-time pop-up blocks and threat warnings.</p>
+
+        <div class="whitelist-input-row">
+          <input type="text" id="whitelist-input" placeholder="e.g. internal-portal.company.com">
+          <button class="btn btn-secondary" id="add-whitelist-btn">Add Domain</button>
+        </div>
+
+        <div class="whitelist-tags" id="whitelist-tags-container">
+          <!-- Dynamic tags populated by options.js -->
+        </div>
+      </section>
+
+      <!-- Section 4: Backend API Microservice -->
+      <section class="config-card">
+        <h2 class="card-title">4. Local Machine Learning Microservice (Optional)</h2>
+        <p class="card-desc">PhishShield runs 100% locally in-browser by default. You can optionally connect it to the main project's Python FastAPI model server.</p>
+
+        <div class="setting-row">
+          <div class="setting-text">
+            <label class="setting-label" for="backend-toggle">Query Local Backend Server</label>
+            <span class="setting-subtext">Sends scans to local FastAPI service for scikit-learn model verification if running.</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="backend-toggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="api-config-row" id="api-config-row">
+          <input type="text" id="api-url-input" value="http://localhost:8000" placeholder="http://localhost:8000">
+          <button class="btn btn-outline" id="test-api-btn">Test Connection</button>
+          <span class="api-status-badge" id="api-status-badge">Not Connected</span>
+        </div>
+      </section>
+
+      <!-- Actions -->
+      <div class="options-actions-bar">
+        <button class="btn btn-save" id="save-btn-bottom">Save All Changes</button>
+        <button class="btn btn-outline" id="reset-btn">Reset to Defaults</button>
+        <span class="save-toast is-hidden" id="save-toast">✓ Settings successfully saved!</span>
+      </div>
+    </main>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
+

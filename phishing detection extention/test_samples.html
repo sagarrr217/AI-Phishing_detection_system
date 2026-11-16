@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhishShield AI — Real-Time Extension Testbench</title>
+  
+  <!-- Modern Typography: Outfit (Display) + Inter (UI) + JetBrains Mono (Telemetry) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-main: #060813;
+      --bg-card: #0b1122;
+      --bg-card-subtle: #0e162d;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-medium: rgba(255, 255, 255, 0.14);
+      --cyan-accent: #00e5ff;
+      --cyan-glow: rgba(0, 229, 255, 0.25);
+      --safe-emerald: #10b981;
+      --safe-bg: rgba(16, 185, 129, 0.12);
+      --safe-border: rgba(16, 185, 129, 0.35);
+      --warn-amber: #f59e0b;
+      --warn-bg: rgba(245, 158, 11, 0.12);
+      --warn-border: rgba(245, 158, 11, 0.35);
+      --danger-crimson: #ef4444;
+      --danger-bg: rgba(239, 68, 68, 0.14);
+      --danger-border: rgba(239, 68, 68, 0.4);
+      --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-main);
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 229, 255, 0.08) 0%, transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.04) 0%, transparent 50%);
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px 80px;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 820px;
+    }
+
+    header {
+      margin-bottom: 28px;
+    }
+
+    .brand-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .shield-icon-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.2) 0%, rgba(14, 22, 45, 0.9) 100%);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--cyan-accent);
+      box-shadow: 0 0 16px var(--cyan-glow);
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+    }
+
+    .ai-pill {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      background: linear-gradient(90deg, #00e5ff, #38bdf8);
+      color: #030712;
+      padding: 2px 7px;
+      border-radius: 5px;
+      margin-left: 6px;
+    }
+
+    p.lead-text {
+      color: #94a3b8;
+      font-size: 13.5px;
+      line-height: 1.5;
+    }
+
+    .instruction-card {
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.08) 0%, rgba(11, 17, 34, 0.9) 100%);
+      border: 1px solid rgba(0, 229, 255, 0.25);
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-bottom: 24px;
+      line-height: 1.55;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .instruction-card strong {
+      color: #ffffff;
+    }
+
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 20px 22px;
+      margin-bottom: 20px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 4px 16px rgba(0, 0, 0, 0.5);
+      transition: border-color 0.2s ease;
+    }
+
+    .section-card:hover {
+      border-color: var(--border-medium);
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      letter-spacing: -0.01em;
+    }
+
+    .score-hint {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--cyan-accent);
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      padding: 3px 9px;
+      border-radius: 6px;
+    }
+
+    .test-links-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .test-link-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 14px;
+      background: var(--bg-card-subtle);
+      border-radius: 8px;
+      color: #38bdf8;
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      border: 1px solid var(--border-subtle);
+      transition: all 0.18s ease;
+    }
+
+    .test-link-row:hover {
+      background: rgba(0, 229, 255, 0.08);
+      border-color: rgba(0, 229, 255, 0.4);
+      transform: translateX(3px);
+    }
+
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      letter-spacing: 0.04em;
+    }
+
+    .tag-danger {
+      background: var(--danger-bg);
+      color: #f87171;
+      border: 1px solid var(--danger-border);
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+    }
+
+    .tag-warn {
+      background: var(--warn-bg);
+      color: #fbbf24;
+      border: 1px solid var(--warn-border);
+    }
+
+    .tag-safe {
+      background: var(--safe-bg);
+      color: #34d399;
+      border: 1px solid var(--safe-border);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand-title-wrap">
+        <div class="shield-icon-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <polyline points="9 12 11 14 15 10"></polyline>
+          </svg>
+        </div>
+        <h1>PhishShield <span class="ai-pill">AI</span> Real-Time Testbench</h1>
+      </div>
+      <p class="lead-text">Live test suite demonstrating dynamic continuous scoring across distinct internet destinations using our client-side 120-tree Random Forest inference model.</p>
+    </header>
+
+    <div class="instruction-card">
+      <strong>💡 How to test dynamic scoring:</strong> Open the PhishShield extension popup or copy any link below into the <strong>"Quick Scanner"</strong> tab. You will see scores dynamically vary across the gradient: <strong>99</strong> (Clean Authority), <strong>84</strong> (Local Dev Server), <strong>64</strong> (Insecure HTTP), down to <strong>8-20</strong> (Phishing Traps & Raw IP Attacks).
+    </div>
+
+    <!-- Category 1 -->
+    <div class="section-card">
+      <h2>
+        <span>1. Verified Global Platforms (Clean Authority)</span>
+        <span class="score-hint">Dynamic Score: 90 - 99</span>
+      </h2>
+      <div class="test-links-grid">
+        <a class="test-link-row" href="https://www.google.com" target="_blank">
+          <span>https://www.google.com</span>
+          <span class="tag tag-safe">Safe (99/100)</span>
+        </a>
+        <a class="test-link-row" href="https://github.com" target="_blank">
+          <span>https://github.com</span>
+          <span class="tag tag-safe">Safe (99/100)</span>
+        </a>
+        <a class="test-link-row" href="https://en.wikipedia.org/wiki/Artificial_intelligence" target="_blank">
+          <span>https://en.wikipedia.org/wiki/Artificial_intelligence</span>
+          <span class="tag tag-safe">Safe (99/100)</span>
+        </a>
+        <a class="test-link-row" href="https://news.ycombinator.com" target="_blank">
+          <span>https://news.ycombinator.com</span>
+          <span class="tag tag-safe">Safe (90/100)</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Category 2 -->
+    <div class="section-card">
+      <h2>
+        <span>2. Localhost & Development Servers</span>
+        <span class="score-hint">Dynamic Score: 81 - 88</span>
+      </h2>
+      <div class="test-links-grid">
+        <a class="test-link-row" href="http://localhost:3000/" target="_blank">
+          <span>http://localhost:3000/</span>
+          <span class="tag tag-safe">Local Dev (84/100)</span>
+        </a>
+        <a class="test-link-row" href="http://localhost:8080/dashboard" target="_blank">
+          <span>http://localhost:8080/dashboard</span>
+          <span class="tag tag-safe">Local Dev (84/100)</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Category 3 -->
+    <div class="section-card">
+      <h2>
+        <span>3. Unencrypted HTTP Web & Elevated Risks</span>
+        <span class="score-hint">Dynamic Score: 60 - 75</span>
+      </h2>
+      <div class="test-links-grid">
+        <a class="test-link-row" href="http://my-blog.org/post/1" target="_blank">
+          <span>http://my-blog.org/post/1</span>
+          <span class="tag tag-warn">Warning (64/100)</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Category 4 -->
+    <div class="section-card">
+      <h2>
+        <span>4. High-Abuse TLDs & Phishing Brand Spoofing</span>
+        <span class="score-hint">Dynamic Score: 8 - 35</span>
+      </h2>
+      <div class="test-links-grid">
+        <a class="test-link-row" href="http://suspicious-free-gifts.xyz/win-prize" target="_blank">
+          <span>http://suspicious-free-gifts.xyz/win-prize</span>
+          <span class="tag tag-danger">Danger (20/100)</span>
+        </a>
+        <a class="test-link-row" href="http://paypal-verification-update.tk/login" target="_blank">
+          <span>http://paypal-verification-update.tk/login</span>
+          <span class="tag tag-danger">Critical Phish (8/100)</span>
+        </a>
+        <a class="test-link-row" href="http://192.168.1.100/account/verify" target="_blank">
+          <span>http://192.168.1.100/account/verify</span>
+          <span class="tag tag-danger">Direct IP Trap (8/100)</span>
+        </a>
+        <a class="test-link-row" href="http://appleid.apple.com.security-verify.xyz/account" target="_blank">
+          <span>http://appleid.apple.com.security-verify.xyz/account</span>
+          <span class="tag tag-danger">Subdomain Camouflage (8/100)</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

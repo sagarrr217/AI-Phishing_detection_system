@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhishShield — Simple & Safe Browsing</title>
+  
+  <!-- Clean, Legible Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-box">
+    <!-- Header: Minimal brand + status + settings -->
+    <header class="header">
+      <div class="brand">
+        <div class="brand-shield" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <polyline points="9 12 11 14 15 10"></polyline>
+          </svg>
+        </div>
+        <span class="brand-name">PhishShield</span>
+      </div>
+
+      <div class="header-right">
+        <div class="status-pill status-safe" id="header-status-pill">
+          <span class="status-dot"></span>
+          <span id="header-status-text">Protected</span>
+        </div>
+        <button class="settings-btn" id="open-options-btn" title="Settings" aria-label="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Two Minimal Segmented Tabs -->
+    <nav class="nav-segmented" role="tablist">
+      <button class="tab-btn active" data-tab="tab-current" role="tab" aria-selected="true">Current Site</button>
+      <button class="tab-btn" data-tab="tab-check" role="tab" aria-selected="false">Check a Link</button>
+    </nav>
+
+    <!-- TAB 1: Current Site -->
+    <main class="tab-pane active" id="tab-current">
+      <!-- Loading State -->
+      <div class="loading-state is-hidden" id="tab-loading">
+        <div class="spinner"></div>
+        <p>Checking website safety...</p>
+      </div>
+
+      <!-- Result View -->
+      <div class="result-view" id="tab-result-content">
+        <!-- Hero Status Card (Large, Minimal, Crystal Clear) -->
+        <section class="hero-card hero-safe" id="hero-card">
+          <div class="hero-header">
+            <div class="hero-icon-box" id="hero-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <polyline points="9 12 11 14 15 10"></polyline>
+              </svg>
+            </div>
+            <div class="score-pill" id="score-pill">
+              <span class="score-val" id="safety-score-val">99</span>
+              <span class="score-max">/100</span>
+            </div>
+          </div>
+
+          <h2 class="hero-headline" id="verdict-headline">This Website is Safe</h2>
+          <p class="hero-explanation" id="verdict-desc">Verified legitimate destination. Safe to browse and enter credentials.</p>
+
+          <!-- Domain Pill -->
+          <div class="domain-pill">
+            <span class="domain-icon" id="domain-lock-icon">🔒</span>
+            <span class="domain-text" id="domain-text" title="Active URL">google.com</span>
+            <button class="copy-url-btn" id="copy-url-btn" title="Copy URL">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- 3-Point Checklist: Plain English, Zero Jargon -->
+        <section class="checklist" aria-label="Security Breakdown">
+          <div class="check-row" id="row-ssl">
+            <div class="check-lead">
+              <span class="check-bullet" id="bullet-ssl">✓</span>
+              <span class="check-name">Connection</span>
+            </div>
+            <span class="check-status" id="val-ssl">Secure (HTTPS)</span>
+          </div>
+
+          <div class="check-row" id="row-domain">
+            <div class="check-lead">
+              <span class="check-bullet" id="bullet-domain">✓</span>
+              <span class="check-name">Website Identity</span>
+            </div>
+            <span class="check-status" id="val-domain">Genuine Website</span>
+          </div>
+
+          <div class="check-row" id="row-ai">
+            <div class="check-lead">
+              <span class="check-bullet" id="bullet-ai">✓</span>
+              <span class="check-name">AI Threat Scan</span>
+            </div>
+            <span class="check-status" id="val-ai">Clean (Passed)</span>
+          </div>
+        </section>
+
+        <!-- Collapsible Details Toggle (clean & optional) -->
+        <div class="details-section">
+          <button class="details-toggle-btn" id="toggle-details" aria-expanded="false">
+            <span id="details-toggle-label">Show Technical Details</span>
+            <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          
+          <div class="details-drawer is-hidden" id="details-drawer">
+            <div class="details-item">
+              <span class="details-key">AI Phishing Risk:</span>
+              <strong class="details-val" id="detail-ai-prob">1%</strong>
+            </div>
+            <div class="details-item">
+              <span class="details-key">AI Model Engine:</span>
+              <span class="details-val">Random Forest (120 Trees)</span>
+            </div>
+            <div class="details-item">
+              <span class="details-key">Domain Entropy:</span>
+              <span class="details-val" id="detail-entropy">2.7 (Normal)</span>
+            </div>
+            <div class="details-item">
+              <span class="details-key">TLD Security:</span>
+              <span class="details-val" id="detail-tld">Standard (.com)</span>
+            </div>
+            <div class="findings-slot" id="detail-findings">
+              <!-- Dynamically inserted findings -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Simple Actions -->
+        <footer class="actions-footer">
+          <button class="btn btn-primary" id="rescan-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            <span>Re-check Site</span>
+          </button>
+          <button class="btn btn-secondary" id="whitelist-btn">
+            <span>Trust Site</span>
+          </button>
+        </footer>
+      </div>
+    </main>
+
+    <!-- TAB 2: Check a Link (Super Simple) -->
+    <section class="tab-pane is-hidden" id="tab-check">
+      <div class="scanner-card">
+        <label for="manual-url-input" class="scanner-title">Check Any Link Before Clicking</label>
+        <p class="scanner-desc">Paste a suspicious URL, message link, or QR code destination.</p>
+        
+        <div class="input-row">
+          <input type="text" id="manual-url-input" placeholder="e.g. paypal.com or suspicious link..." autocomplete="off" spellcheck="false">
+          <button class="btn btn-primary" id="manual-scan-btn">Scan</button>
+        </div>
+
+        <div class="sample-chips-box">
+          <span class="samples-title">Try an example:</span>
+          <div class="chips-flex">
+            <button class="sample-chip safe" data-sample="https://www.google.com">Google</button>
+            <button class="sample-chip safe" data-sample="https://www.paypal.com">PayPal</button>
+            <button class="sample-chip warn" data-sample="http://my-blog.org/post/1">Insecure HTTP</button>
+            <button class="sample-chip danger" data-sample="http://paypal-verification-update.tk/login">Fake PayPal (.tk)</button>
+          </div>
+        </div>
+
+        <div class="scanner-result is-hidden" id="manual-result-box">
+          <!-- Populated after scanning -->
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="../scripts/ml-model-data.js"></script>
+  <script src="../scripts/detector-engine.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
